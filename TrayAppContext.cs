@@ -65,20 +65,62 @@ namespace MacroCopyPaste
             trayIcon.Visible = false;
             Application.Exit();
         }
+		[DllImport("user32.dll")]
+		private static extern short GetAsyncKeyState(Keys vKey);
 
-        private void SimulateClipboardTyping()
+		private bool IsKeyDown(Keys key)
+		{
+			return (GetAsyncKeyState(key) & 0x8000) != 0;
+		}
+
+		private bool IsModifierKeyDown()
+		{
+			return IsKeyDown(Keys.ControlKey) || IsKeyDown(Keys.ShiftKey) || IsKeyDown(Keys.Menu); // Alt
+		}
+		private string EscapeSendKeysChar(char c)
+		{
+			switch (c)
+			{
+				case '+': return "{+}";
+				case '^': return "{^}";
+				case '%': return "{%}";
+				case '~': return "{~}";
+				case '(': return "{(}";
+				case ')': return "{)}";
+				case '[': return "{[}";
+				case ']': return "{]}";
+				case '{': return "{{}";
+				case '}': return "{}}";
+				default: return c.ToString();
+			}
+		}
+		private void SimulateClipboardTyping()
         {
-            // Check if the clipboard contains text
-            if (Clipboard.ContainsText())
+			System.Threading.Thread.Sleep(500);
+			// Check if the clipboard contains text
+			if (Clipboard.ContainsText())
             {
                 string clipboardText = Clipboard.GetText();
 
                 // Simulate typing the clipboard text while preserving case
                 foreach (char c in clipboardText)
                 {
-					SendKeys.SendWait(c.ToString());
-                }
+                    int attempts = 0;
+                    while (IsModifierKeyDown())
+                    {
+                        System.Threading.Thread.Sleep(50);
+                        attempts++;
+                        if (attempts >= 10 && IsModifierKeyDown())
+                        {
+                            MessageBox.Show("Modifier key is still pressed after 10 attempts. Exiting loop.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
 
+					string keyToSend = EscapeSendKeysChar(c);
+					SendKeys.SendWait(keyToSend);
+
+				}
             }
             else
             {
