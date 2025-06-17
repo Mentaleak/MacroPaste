@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace MacroCopyPaste
 {
@@ -40,10 +39,12 @@ namespace MacroCopyPaste
         {
             InitializeComponent();
         }
+
         private Keys currentHotkey;
         private Keys currentModifiers;
         private Keys defaultKey = Keys.V;
         private Keys defaultModifiers = Keys.Control | Keys.Alt;
+
         private void textBox_HotKey_KeyDown(object sender, KeyEventArgs e)
         {
             e.SuppressKeyPress = true;
@@ -97,6 +98,7 @@ namespace MacroCopyPaste
             const int HOTKEY_ID = 9000;
             RegisterHotKey(this.Handle, HOTKEY_ID, modifiers, (uint)currentHotkey);
         }
+
         private void RegisterPasteHotkey()
         {
             uint modifiers = MOD_CONTROL | MOD_ALT;
@@ -109,6 +111,7 @@ namespace MacroCopyPaste
                 MessageBox.Show("Failed to register hotkey. It might already be in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void button_update_Click(object sender, EventArgs e)
         {
             // Unregister the current hotkey
@@ -119,6 +122,7 @@ namespace MacroCopyPaste
 
             MessageBox.Show("Hotkey updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             UnregisterHotKey(this.Handle, HOTKEY_ID);
@@ -151,12 +155,8 @@ namespace MacroCopyPaste
                 int id = m.WParam.ToInt32();
                 if (id == HOTKEY_ID)
                 {
-                    // Check if textBox_HotKey has focus
-                    if (!textBox_HotKey.Focused)
-                    {
-                        // Perform the hotkey action only if textBox_HotKey does not have focus
-                        SimulateClipboardTyping();
-                    }
+                    // Perform the hotkey action regardless of form visibility
+                    SimulateClipboardTyping();
                 }
             }
             base.WndProc(ref m);
