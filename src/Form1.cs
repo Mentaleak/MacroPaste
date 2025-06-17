@@ -11,6 +11,9 @@ using System.Runtime.InteropServices;
 
 namespace MacroCopyPaste
 {
+    /// <summary>
+    /// Represents the main form for configuring hotkeys in the MacroCopyPaste application.
+    /// </summary>
     public partial class Form1 : Form
     {
         [DllImport("user32.dll")]
@@ -35,6 +38,9 @@ namespace MacroCopyPaste
             "Ctrl + Alt + Delete"
         };
 
+        /// <summary>
+        /// Initializes a new instance of the Form1 class.
+        /// </summary>
         public Form1()
         {
             InitializeComponent();
@@ -45,6 +51,11 @@ namespace MacroCopyPaste
         private Keys defaultKey = Keys.V;
         private Keys defaultModifiers = Keys.Control | Keys.Alt;
 
+        /// <summary>
+        /// Handles the KeyDown event for the hotkey text box, allowing users to configure a custom hotkey.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The KeyEventArgs containing event data.</param>
         private void textBox_HotKey_KeyDown(object sender, KeyEventArgs e)
         {
             e.SuppressKeyPress = true;
@@ -78,6 +89,11 @@ namespace MacroCopyPaste
             }
         }
 
+        /// <summary>
+        /// Handles the Load event for the form, initializing the default hotkey and registering it.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The EventArgs containing event data.</param>
         private void Form1_Load(object sender, EventArgs e)
         {
             currentHotkey = defaultKey;
@@ -88,6 +104,9 @@ namespace MacroCopyPaste
             RegisterSelectedHotkey(); // Optional: auto-register on launch
         }
 
+        /// <summary>
+        /// Registers the currently selected hotkey with the operating system.
+        /// </summary>
         private void RegisterSelectedHotkey()
         {
             uint modifiers = 0;
@@ -99,18 +118,6 @@ namespace MacroCopyPaste
             RegisterHotKey(this.Handle, HOTKEY_ID, modifiers, (uint)currentHotkey);
         }
 
-        private void RegisterPasteHotkey()
-        {
-            uint modifiers = MOD_CONTROL | MOD_ALT;
-            uint vk = (uint)Keys.V;
-
-            bool registered = RegisterHotKey(this.Handle, HOTKEY_ID, modifiers, vk);
-
-            if (!registered)
-            {
-                MessageBox.Show("Failed to register hotkey. It might already be in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
         private void button_update_Click(object sender, EventArgs e)
         {
@@ -127,39 +134,6 @@ namespace MacroCopyPaste
         {
             UnregisterHotKey(this.Handle, HOTKEY_ID);
             base.OnFormClosing(e);
-        }
-
-        private void SimulateClipboardTyping()
-        {
-            // Check if the clipboard contains text
-            if (Clipboard.ContainsText())
-            {
-                string clipboardText = Clipboard.GetText();
-
-                // Simulate typing the clipboard text
-                foreach (char c in clipboardText)
-                {
-                    SendKeys.Send(c.ToString());
-                }
-            }
-            else
-            {
-                MessageBox.Show("Clipboard does not contain text.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            if (m.Msg == WM_HOTKEY)
-            {
-                int id = m.WParam.ToInt32();
-                if (id == HOTKEY_ID)
-                {
-                    // Perform the hotkey action regardless of form visibility
-                    SimulateClipboardTyping();
-                }
-            }
-            base.WndProc(ref m);
         }
     }
 }

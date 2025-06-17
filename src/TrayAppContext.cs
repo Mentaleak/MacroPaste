@@ -5,6 +5,9 @@ using System.Windows.Forms;
 
 namespace MacroCopyPaste
 {
+    /// <summary>
+    /// Represents the application context for the tray application, managing the tray icon and hotkey functionality.
+    /// </summary>
     public class TrayAppContext : ApplicationContext
     {
         [DllImport("user32.dll")]
@@ -13,12 +16,18 @@ namespace MacroCopyPaste
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+        [DllImport("user32.dll")]
+        private static extern short GetAsyncKeyState(Keys vKey);
+
         private const int HOTKEY_ID = 9000;
         private const int WM_HOTKEY = 0x0312;
         private const int WM_KEYUP = 0x0101; // Windows message for key release
 
         private NotifyIcon trayIcon;
 
+        /// <summary>
+        /// Initializes the tray application context, including the tray icon, context menu, and hotkey registration.
+        /// </summary>
         public TrayAppContext()
         {
             var contextMenu = new ContextMenuStrip();
@@ -46,63 +55,86 @@ namespace MacroCopyPaste
             Application.AddMessageFilter(new HotKeyMessageFilter(HOTKEY_ID, WM_KEYUP, SimulateClipboardTyping));
         }
 
+        /// <summary>
+        /// Unregisters the hotkey and performs cleanup when the application exits.
+        /// </summary>
         protected override void ExitThreadCore()
         {
-            // Unregister the hotkey when the application exits
             UnregisterHotKey(IntPtr.Zero, HOTKEY_ID);
             base.ExitThreadCore();
         }
 
+        /// <summary>
+        /// Opens the hotkey configuration form when the "Set-Hot-Key" menu item is clicked.
+        /// </summary>
         private void SetHotKey(object sender, EventArgs e)
         {
-            // Launch the hotkey form
             Form1 form = new Form1();
             form.ShowDialog();
         }
 
+        /// <summary>
+        /// Exits the application when the "Exit" menu item is clicked.
+        /// </summary>
         private void Exit(object sender, EventArgs e)
         {
             trayIcon.Visible = false;
             Application.Exit();
         }
-		[DllImport("user32.dll")]
-		private static extern short GetAsyncKeyState(Keys vKey);
 
-		private bool IsKeyDown(Keys key)
-		{
-			return (GetAsyncKeyState(key) & 0x8000) != 0;
-		}
-
-		private bool IsModifierKeyDown()
-		{
-			return IsKeyDown(Keys.ControlKey) || IsKeyDown(Keys.ShiftKey) || IsKeyDown(Keys.Menu); // Alt
-		}
-		private string EscapeSendKeysChar(char c)
-		{
-			switch (c)
-			{
-				case '+': return "{+}";
-				case '^': return "{^}";
-				case '%': return "{%}";
-				case '~': return "{~}";
-				case '(': return "{(}";
-				case ')': return "{)}";
-				case '[': return "{[}";
-				case ']': return "{]}";
-				case '{': return "{{}";
-				case '}': return "{}}";
-				default: return c.ToString();
-			}
-		}
-		private void SimulateClipboardTyping()
+        /// <summary>
+        /// Checks if a specific key is currently pressed.
+        /// </summary>
+        /// <param name="key">The key to check.</param>
+        /// <returns>True if the key is pressed; otherwise, false.</returns>
+        private bool IsKeyDown(Keys key)
         {
-			System.Threading.Thread.Sleep(500);
-			// Check if the clipboard contains text
-			if (Clipboard.ContainsText())
+            return (GetAsyncKeyState(key) & 0x8000) != 0;
+        }
+
+        /// <summary>
+        /// Checks if any modifier key (Ctrl, Shift, Alt) is currently pressed.
+        /// </summary>
+        /// <returns>True if a modifier key is pressed; otherwise, false.</returns>
+        private bool IsModifierKeyDown()
+        {
+            return IsKeyDown(Keys.ControlKey) || IsKeyDown(Keys.ShiftKey) || IsKeyDown(Keys.Menu); // Alt
+        }
+
+        /// <summary>
+        /// Escapes special characters for use with SendKeys.
+        /// </summary>
+        /// <param name="c">The character to escape.</param>
+        /// <returns>The escaped character string.</returns>
+        private string EscapeSendKeysChar(char c)
+        {
+            switch (c)
+            {
+                case '+': return "{+}";
+                case '^': return "{^}";
+                case '%': return "{%}";
+                case '~': return "{~}";
+                case '(': return "{(}";
+                case ')': return "{)}";
+                case '[': return "{[}";
+                case ']': return "{]}";
+                case '{': return "{{}";
+                case '}': return "{}}";
+                default: return c.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Simulates typing the text currently stored in the clipboard.
+        /// </summary>
+        private void SimulateClipboardTyping()
+        {
+            System.Threading.Thread.Sleep(500);
+
+            if (Clipboard.ContainsText())
             {
                 string clipboardText = Clipboard.GetText();
 
-                // Simulate typing the clipboard text while preserving case
                 foreach (char c in clipboardText)
                 {
                     int attempts = 0;
@@ -117,10 +149,9 @@ namespace MacroCopyPaste
                         }
                     }
 
-					string keyToSend = EscapeSendKeysChar(c);
-					SendKeys.SendWait(keyToSend);
-
-				}
+                    string keyToSend = EscapeSendKeysChar(c);
+                    SendKeys.SendWait(keyToSend);
+                }
             }
             else
             {
@@ -129,13 +160,21 @@ namespace MacroCopyPaste
         }
     }
 
-    // New class to handle WM_HOTKEY messages
+    /// <summary>
+    /// Filters Windows messages to detect hotkey events and invoke the associated action.
+    /// </summary>
     public class HotKeyMessageFilter : IMessageFilter
     {
         private readonly int hotKeyId;
         private readonly int keyReleaseMessage;
         private readonly Action hotKeyAction;
 
+        /// <summary>
+        /// Initializes a new instance of the HotKeyMessageFilter class.
+        /// </summary>
+        /// <param name="hotKeyId">The ID of the hotkey to filter.</param>
+        /// <param name="keyReleaseMessage">The Windows message to filter for key release.</param>
+        /// <param name="hotKeyAction">The action to invoke when the hotkey is detected.</param>
         public HotKeyMessageFilter(int hotKeyId, int keyReleaseMessage, Action hotKeyAction)
         {
             this.hotKeyId = hotKeyId;
@@ -143,6 +182,11 @@ namespace MacroCopyPaste
             this.hotKeyAction = hotKeyAction;
         }
 
+        /// <summary>
+        /// Filters Windows messages to detect the specified hotkey event.
+        /// </summary>
+        /// <param name="m">The Windows message to filter.</param>
+        /// <returns>True if the message was handled; otherwise, false.</returns>
         public bool PreFilterMessage(ref Message m)
         {
             if (m.Msg == keyReleaseMessage && m.WParam.ToInt32() == hotKeyId)
