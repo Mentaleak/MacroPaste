@@ -7,7 +7,7 @@
     <ProjectGuid>{F1AB993B-1EE9-43D8-B4A6-904758F3C6C9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>MacroCopyPaste</RootNamespace>
-    <AssemblyName>MacroCopyPaste</AssemblyName>
+    <AssemblyName>MacroPaste</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>MacroPaste_Transparent.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -81,6 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TrayAppContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MacroPaste_Transparent.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
