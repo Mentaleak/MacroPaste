@@ -39,18 +39,3 @@ When you're in a remote interface that doesn’t support paste, simply use your 
 ## Notes
 - Ensure MacroPaste is running and visible in the tray before use.
 - If the tool isn't working, verify that your hotkey doesn't conflict with another application.
-
----
-
-## License
-This tool is released under the MIT License. See `LICENSE` file for more details.
-
----
-
-## Contributions
-Pull requests and feedback are welcome! Feel free to fork the repository and enhance the tool.
-
----
-
-## Author
-Maintained by [Your Name or Organization].
