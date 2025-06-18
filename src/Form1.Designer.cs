@@ -32,6 +32,9 @@
             this.textBox_HotKey = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button_update = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.numericUpDown_Delay = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Delay)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox_HotKey
@@ -55,7 +58,7 @@
             // 
             // button_update
             // 
-            this.button_update.Location = new System.Drawing.Point(322, 8);
+            this.button_update.Location = new System.Drawing.Point(241, 45);
             this.button_update.Name = "button_update";
             this.button_update.Size = new System.Drawing.Size(75, 23);
             this.button_update.TabIndex = 2;
@@ -63,11 +66,51 @@
             this.button_update.UseVisualStyleBackColor = true;
             this.button_update.Click += new System.EventHandler(this.button_update_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(64, 45);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(34, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Delay";
+            // 
+            // numericUpDown_Delay
+            // 
+            this.numericUpDown_Delay.DecimalPlaces = 1;
+            this.numericUpDown_Delay.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.numericUpDown_Delay.Location = new System.Drawing.Point(105, 45);
+            this.numericUpDown_Delay.Maximum = new decimal(new int[] {
+            9,
+            0,
+            0,
+            0});
+            this.numericUpDown_Delay.Minimum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.numericUpDown_Delay.Name = "numericUpDown_Delay";
+            this.numericUpDown_Delay.Size = new System.Drawing.Size(38, 20);
+            this.numericUpDown_Delay.TabIndex = 5;
+            this.numericUpDown_Delay.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(428, 42);
+            this.ClientSize = new System.Drawing.Size(324, 73);
+            this.Controls.Add(this.numericUpDown_Delay);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.button_update);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox_HotKey);
@@ -75,6 +118,7 @@
             this.Name = "Form1";
             this.Text = "MarcoPaste";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Delay)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -85,6 +129,8 @@
         private System.Windows.Forms.TextBox textBox_HotKey;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button_update;
+        private System.Windows.Forms.Label label3;
+        public  System.Windows.Forms.NumericUpDown numericUpDown_Delay;
     }
 }
 

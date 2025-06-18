@@ -24,18 +24,21 @@ namespace MacroCopyPaste
         private const int WM_KEYUP = 0x0101; // Windows message for key release
 
         private NotifyIcon trayIcon;
+        private int delayInSeconds;
 
         /// <summary>
         /// Initializes the tray application context, including the tray icon, context menu, and hotkey registration.
         /// </summary>
-        public TrayAppContext()
+        public TrayAppContext(int delayInSeconds)
         {
+            this.delayInSeconds = delayInSeconds;
+
             var contextMenu = new ContextMenuStrip();
             contextMenu.Items.Add("Set-Hot-Key", null, SetHotKey);
             contextMenu.Items.Add("Exit", null, Exit);
 
             // Use the form's icon for the tray icon
-            Icon formIcon = new Form1().Icon;
+            Icon formIcon = new Form1(this).Icon;
 
             trayIcon = new NotifyIcon()
             {
@@ -56,6 +59,15 @@ namespace MacroCopyPaste
         }
 
         /// <summary>
+        /// Updates the delay in seconds for clipboard typing simulation.
+        /// </summary>
+        /// <param name="newDelayInSeconds">The new delay in seconds.</param>
+        public void UpdateDelay(int newDelayInSeconds)
+        {
+            delayInSeconds = newDelayInSeconds;
+        }
+
+        /// <summary>
         /// Unregisters the hotkey and performs cleanup when the application exits.
         /// </summary>
         protected override void ExitThreadCore()
@@ -69,7 +81,7 @@ namespace MacroCopyPaste
         /// </summary>
         private void SetHotKey(object sender, EventArgs e)
         {
-            Form1 form = new Form1();
+            Form1 form = new Form1(this); // Pass the current TrayAppContext instance
             form.ShowDialog();
         }
 
@@ -129,7 +141,7 @@ namespace MacroCopyPaste
         /// </summary>
         private void SimulateClipboardTyping()
         {
-            System.Threading.Thread.Sleep(500);
+            System.Threading.Thread.Sleep(delayInSeconds * 1000);
 
             if (Clipboard.ContainsText())
             {

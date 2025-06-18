@@ -38,12 +38,15 @@ namespace MacroCopyPaste
             "Ctrl + Alt + Delete"
         };
 
+        private TrayAppContext trayAppContext;
+
         /// <summary>
         /// Initializes a new instance of the Form1 class.
         /// </summary>
-        public Form1()
+        public Form1(TrayAppContext trayAppContext)
         {
             InitializeComponent();
+            this.trayAppContext = trayAppContext;
         }
 
         private Keys currentHotkey;
@@ -118,16 +121,13 @@ namespace MacroCopyPaste
             RegisterHotKey(this.Handle, HOTKEY_ID, modifiers, (uint)currentHotkey);
         }
 
-
         private void button_update_Click(object sender, EventArgs e)
         {
-            // Unregister the current hotkey
-            UnregisterHotKey(this.Handle, HOTKEY_ID);
+            // Update the delay value in TrayAppContext
+            int newDelay = (int)numericUpDown_Delay.Value;
+            trayAppContext.UpdateDelay(newDelay);
 
-            // Register the new hotkey
-            RegisterSelectedHotkey();
-
-            MessageBox.Show("Hotkey updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Delay updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

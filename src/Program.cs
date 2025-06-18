@@ -30,8 +30,15 @@ namespace MacroCopyPaste
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TrayAppContext());
+
+            // Create TrayAppContext with an initial delay value
+            TrayAppContext trayAppContext = new TrayAppContext(5); // Default delay value (e.g., 5 seconds)
+
+            // Pass TrayAppContext to Form1
+            Form1 form = new Form1(trayAppContext);
+            form.ShowDialog();
+
+            Application.Run(trayAppContext);
         }
     }
 }
-
