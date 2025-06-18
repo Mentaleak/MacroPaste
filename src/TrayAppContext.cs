@@ -141,7 +141,10 @@ namespace MacroCopyPaste
         /// </summary>
         private void SimulateClipboardTyping()
         {
-            System.Threading.Thread.Sleep(delayInSeconds * 1000);
+            using (var countdown = new CountdownForm(delayInSeconds))
+            {
+                countdown.ShowDialog();
+            }
 
             if (Clipboard.ContainsText())
             {

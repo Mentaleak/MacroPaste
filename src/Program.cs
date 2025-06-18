@@ -32,7 +32,7 @@ namespace MacroCopyPaste
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Create TrayAppContext with an initial delay value
-            TrayAppContext trayAppContext = new TrayAppContext(5); // Default delay value (e.g., 5 seconds)
+            TrayAppContext trayAppContext = new TrayAppContext(3); // Default delay value (e.g., 5 seconds)
 
             // Pass TrayAppContext to Form1
             Form1 form = new Form1(trayAppContext);
