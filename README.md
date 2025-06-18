@@ -26,13 +26,13 @@ Right-click the tray icon and choose **Set Hotkey** to configure your preferred 
 ### ![Hotkey UI](./docs/MacroPaste_02.png)
 1. Click inside the **Hotkey** text box.
 2. Press your desired key combination.
-3. Click **Update** to save the new hotkey.
-
+3. Adjust the Paste Time Delay if necessary.
+4. Click **Update** to update settings.
 ---
 
 ## Using MacroPaste
 ### ![Using the Tool](./docs/MacroPaste_03.gif)
-When you're in a remote interface that doesn’t support paste, simply use your configured hotkey (default: **Ctrl + Alt + V**) and MacroPaste will type out the contents of your clipboard.
+When you're in a remote interface that doesn’t support paste, simply use your configured hotkey (default: **Ctrl + Alt + V**) and MacroPaste will count down then type out the contents of your clipboard.
 
 ---
 
